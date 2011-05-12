@@ -1,21 +1,23 @@
 #!/bin/sh
 
-if [ -d /usr/local/etc/bash-completion.d ]; then
+if [ ! -d /usr/local/etc/bash-completion.d ]; then
     echo "created /usr/local/etc/bash-completion.d"
     mkdir -p /usr/local/etc/bash-completion.d
 fi
+
+current_dir=`pwd`
 
 # /usr/local/etc/bash-completion.d 以下に管理しているファイルのシンボリックリンクを貼る。
 # なお、指定したリンクファイルがすでにあった場合は、上書きするかどうか問い合わせを行い、
 # 上書きする場合には、.orig という suffix でファイルのバックアップを作成する。
 echo "Make links for git-bash-completion"
-find . -name 'git-*' -exec ln -sbi --suffix=.orig {} /usr/local/etc/bash-completion.d/ \;
+find $current_dir -name 'git-*' -exec ln -sbi --suffix=.orig {} /usr/local/etc/bash-completion.d/ \;
 
 # change users
 # users=(hoge foo bar)
 
 for user in ${users[@]};do
-    bashrc="/Users/${user}/.bashrc"
+    bashrc="/home/${user}/.bashrc"
     echo "# git completion" >> $bashrc
     echo "if [ -f /usr/local/etc/bash-completion.d/git-completion.bash ]; then" >> $bashrc
     echo "    source /usr/local/etc/bash-completion.d/git-completion.bash" >> $bashrc
